@@ -39,7 +39,7 @@
 #define ASCII_RECEIVE_BUFFER_SIZE		256
 #define BINARY_RECEIVE_BUFFER_SIZE		256
 #define READ_BUFFER_SIZE				256
-#define NUMBER_OF_MILLISECONDS_TO_SLEEP_AFTER_RECEIVING_NO_BYTES_ON_COM_PORT_READ	5
+#define NUMBER_OF_MILLISECONDS_TO_SLEEP_AFTER_RECEIVING_NO_BYTES_ON_COM_PORT_READ   .1	
 #define DEFAULT_TIMEOUT_IN_MS			5000
 #define ASCII_START_CHAR				'$'
 #define ASCII_FIRST_END_CHAR			'\r'
@@ -766,6 +766,13 @@ uint16_t vndevice_processGroup2Data(
 	if (groupField & 0x0080) {
 
 		data->syncInCnt = *((uint32_t*) groupDataPtr);
+
+		groupDataPtr += sizeof (uint32_t);
+	}
+	
+	if (groupField & 0x0100) {
+		
+		data->syncOutCnt = *((uint32_t*) groupDataPtr);
 
 		groupDataPtr += sizeof (uint32_t);
 	}

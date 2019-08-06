@@ -30,10 +30,8 @@ using sensor_msgs::MagneticField;
 using sensor_msgs::FluidPressure;
 using sensor_msgs::Temperature;
 
-void RosVector3FromVnVector3(geometry_msgs::Vector3& ros_vec3,
-                             const VnVector3& vn_vec3);
-void RosQuaternionFromVnQuaternion(geometry_msgs::Quaternion& ros_quat,
-                                   const VnQuaternion& vn_quat);
+void RosVector3FromVnVector3(geometry_msgs::Vector3& ros_vec3, const VnVector3& vn_vec3);
+void RosQuaternionFromVnQuaternion(geometry_msgs::Quaternion& ros_quat, const VnQuaternion& vn_quat);
 
 void AsyncListener(void* sender, VnDeviceCompositeData* data) {
   imu_vn_100_ptr->PublishData(*data);
@@ -43,8 +41,7 @@ constexpr int ImuVn100::kBaseImuRate;
 constexpr int ImuVn100::kDefaultImuRate;
 constexpr int ImuVn100::kDefaultSyncOutRate;
 
-void ImuVn100::SyncInfo::Update(const unsigned sync_count,
-                                const ros::Time& sync_time) {
+void ImuVn100::SyncInfo::Update(const unsigned sync_count, const ros::Time& sync_time) {
   if (rate <= 0) return;
 
   if (count != sync_count) {
@@ -123,6 +120,7 @@ void ImuVn100::LoadParameters() {
   pnh_.param("imu_compensated", imu_compensated_, false);
 
   pnh_.param("vpe/enable", vpe_enable_, true);
+  pnh_.param("enableSyncOutCount", SyncOutCount_, true);
 
   pnh_.param("vpe/heading_mode", vpe_heading_mode_, 1);
   pnh_.param("vpe/filtering_mode", vpe_filtering_mode_, 1);
@@ -332,6 +330,14 @@ void ImuVn100::Stream(bool async) {
         grp1 |= BG1_YPR;
         sgrp1.push_back("BG1_YPR");
       }
+      uint16_t grp2 = BG2_SYNC_OUT_CNT;
+      std::list<std::string> sgrp2;
+      
+      if (SyncOutCount_)
+      {
+		  grp2 |= BG2_SYNC_OUT_CNT;
+		  sgrp2.push_back("BG2_SyncOutCount");
+	  }
       uint16_t grp3 = BG3_NONE;
       std::list<std::string> sgrp3;
       uint16_t grp5 = BG5_NONE;
@@ -436,7 +442,7 @@ void ImuVn100::Disconnect() {
   vn100_reset(&imu_);
   vn100_disconnect(&imu_);
 }
-
+#000000
 void ImuVn100::PublishData(const VnDeviceCompositeData& data) {
   sensor_msgs::Imu imu_msg;
   imu_msg.header.stamp = ros::Time::now();

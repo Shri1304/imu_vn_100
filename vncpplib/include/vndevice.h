@@ -143,6 +143,7 @@ extern "C" {
 #define BG2_TIME_PPS		0x0020	/**< Time since the last GPS PPS trigger. */
 #define BG2_TIME_UTC		0x0040	/**< UTC time. */
 #define BG2_SYNC_IN_CNT		0x0080	/**< SyncIn trigger count. */
+#define BG2_SYNC_OUT_CNT    0x0100  /**< SyncOut Trigger count. */ 
 /** @} */
 
 /**
@@ -321,6 +322,7 @@ typedef struct {
 	VnVector3		deltaVelocity;				/**< The delta velocity due to motion since the values were last output by the device. */
 	uint16_t		insStatus;					/**< Status flags for the INS filter. */
 	uint32_t		syncInCnt;					/**< Number of SyncIn trigger events. */
+	uint32_t		syncOutCnt;					/**< Number of SyncOut trigger events. */
 	uint64_t		timeGpsPps;					/**< Time since the last GPS PPS trigger event. */
 	double			gpsTowSec;					/**< GPS time of week in seconds. */
 	uint64_t		gpsTowNs;					/**< GPS time of week in nanoseconds. */
